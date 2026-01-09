@@ -48,7 +48,6 @@ export default function SignUp() {
           </button>
         </form>
 
-        {/* LINK KE SIGN IN */}
         <p className="text-center text-gray-200 mt-6 text-sm">
           Sudah punya akun?{" "}
           <Link

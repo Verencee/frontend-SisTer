@@ -14,10 +14,6 @@ export type Character = {
   imageUrl: string;
 };
 
-// src/pages/Home.tsx
-
-// ... import tetap sama
-
 export default function Home() {
   const navigate = useNavigate();
 
@@ -66,11 +62,8 @@ export default function Home() {
   console.log("CHARACTERS:", characters);
 }, [characters]);
 
-  // ... fungsi logout dan delete tetap sama
-
   if (loading) {
     return (
-      // Pastikan ada background agar teks "Loading" yang berwarna putih kelihatan
       <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">
         <p className="text-xl animate-pulse">Loading data characters...</p>
       </div>
@@ -79,9 +72,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-linear-to-r from-black via-zinc-950 to-zinc-800 p-6 text-white">
-      {/* Konten Utama */}
       <div className="max-w-6xl mx-auto">
-        {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Verence Genshin Collection Character</h1>
           <div className="flex gap-3">
@@ -91,13 +82,12 @@ export default function Home() {
             >
               + Add Character
             </button>
-            <button className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600">
+            {/* <button className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600">
               Logout
-            </button>
+            </button> */}
           </div>
         </div>
 
-        {/* CARD LIST */}
         {characters.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-xl opacity-70">Belum ada karakter yang ditemukan.</p>

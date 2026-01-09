@@ -49,7 +49,6 @@ export default function SignIn() {
           </button>
         </form>
 
-        {/* LINK KE SIGN UP */}
         <p className="text-center text-gray-200 mt-6 text-sm">
           Belum punya akun?{" "}
           <Link

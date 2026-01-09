@@ -24,21 +24,17 @@ export default function CharacterModal({ character, onClose, onSuccess }: Props)
     formData.append("region", (form.elements.namedItem("region") as HTMLInputElement).value);
     formData.append("weapon", (form.elements.namedItem("weapon") as HTMLInputElement).value);
 
-    // 2. Ambil file dari input
     const fileInput = form.elements.namedItem("image") as HTMLInputElement;
     if (fileInput.files && fileInput.files[0]) {
       formData.append("image", fileInput.files[0]);
     }
 
     try {
-      // 3. Kirim FormData ke API
       if (character) {
-        // Untuk UPDATE
         await dataAPI.patch(`/characters/edit/${character.id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else {
-        // Untuk CREATE
         await dataAPI.post("/characters/post", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -64,7 +60,6 @@ export default function CharacterModal({ character, onClose, onSuccess }: Props)
           <input name="region" defaultValue={character?.region ?? ""} placeholder="Region" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" required />
           <input name="weapon" defaultValue={character?.weapon ?? ""} placeholder="Weapon" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" required />
           
-          {/* PERBAIKAN: Input URL diganti menjadi Input FILE */}
           <div className="space-y-1">
             <label className="text-sm opacity-70">Character Image</label>
             <input 
@@ -73,12 +68,10 @@ export default function CharacterModal({ character, onClose, onSuccess }: Props)
               accept="image/*"
               onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
               className="w-full p-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm" 
-              // Jika edit, tidak wajib upload gambar baru kecuali ingin ganti
               required={!character} 
             />
           </div>
 
-          {/* Menampilkan Nama File yang dipilih */}
           {selectedFile && (
             <p className="text-xs text-green-400 italic">File terpilih: {selectedFile.name}</p>
           )}

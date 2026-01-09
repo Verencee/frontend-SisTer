@@ -1,24 +1,15 @@
 import axios, { type InternalAxiosRequestConfig } from "axios";
 
-// =======================
-// AUTH BACKEND (NO TOKEN)
-// =======================
 export const authAPI = axios.create({
   baseURL: "http://localhost:3001",
   timeout: 15000,
 });
 
-// =======================
-// DATA BACKEND (WITH TOKEN)
-// =======================
 export const dataAPI = axios.create({
   baseURL: "http://localhost:3002",
   timeout: 15000,
 });
 
-// =======================
-// TOKEN INTERCEPTOR
-// =======================
 dataAPI.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem("token");
