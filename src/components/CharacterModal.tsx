@@ -10,14 +10,12 @@ type Props = {
 };
 
 export default function CharacterModal({ character, onClose, onSuccess }: Props) {
-  // State untuk menyimpan file yang dipilih agar bisa di-preview (opsional)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
 
-    // 1. Gunakan FormData untuk mengirim File
     const formData = new FormData();
     formData.append("name", (form.elements.namedItem("name") as HTMLInputElement).value);
     formData.append("element", (form.elements.namedItem("element") as HTMLInputElement).value);

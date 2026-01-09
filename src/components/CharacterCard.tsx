@@ -1,4 +1,3 @@
-// src/components/CharacterCard.tsx
 import { useNavigate } from "react-router-dom";
 import type { Character } from "../pages/Home";
 
@@ -13,7 +12,6 @@ export default function CharacterCard({ data, onEdit, onDelete }: Props) {
 
   return (
     <div className="bg-white/10 rounded-xl overflow-hidden backdrop-blur-xl border border-white/20 group hover:border-purple-500/50 transition-all duration-300 shadow-lg">
-      {/* Area yang bisa diklik untuk ke detail */}
       <div 
         className="cursor-pointer" 
         onClick={() => navigate(`/character/${data.id}`)}
@@ -29,6 +27,8 @@ export default function CharacterCard({ data, onEdit, onDelete }: Props) {
         <div className="p-4 space-y-1">
           <h2 className="text-lg font-bold group-hover:text-purple-400">{data.name}</h2>
           <p className="text-sm opacity-70">Element: {data.element}</p>
+          <p className="text-sm opacity-70">Element: {data.region}</p>
+           <p className="text-sm opacity-70">Element: {data.weapon}</p>
         </div>
       </div>
 
