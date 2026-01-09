@@ -71,19 +71,19 @@ export default function Home() {
   if (loading) {
     return (
       // Pastikan ada background agar teks "Loading" yang berwarna putih kelihatan
-      <div className="min-h-screen flex items-center justify-center bg-purple-900 text-white">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-white">
         <p className="text-xl animate-pulse">Loading data characters...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-r from-purple-900 to-blue-900 p-6 text-white">
+    <div className="min-h-screen bg-linear-to-r from-black via-zinc-950 to-zinc-800 p-6 text-white">
       {/* Konten Utama */}
       <div className="max-w-6xl mx-auto">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Genshin Characters</h1>
+          <h1 className="text-2xl font-bold">Verence Genshin Collection Character</h1>
           <div className="flex gap-3">
             <button
               onClick={() => { setSelected(null); setShowModal(true); }}

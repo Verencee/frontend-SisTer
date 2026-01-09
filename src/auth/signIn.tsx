@@ -21,7 +21,7 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-purple-900 to-blue-900 p-5">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-black via-zinc-950 to-zinc-800 p-5">
       <div className="w-full max-w-md p-10 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl">
         
         <h1 className="text-2xl font-bold text-white text-center mb-2">

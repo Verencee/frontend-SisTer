@@ -1,3 +1,5 @@
+// src/components/CharacterModal.tsx
+import { useState } from "react"; // Tambahkan useState untuk preview
 import { dataAPI } from "../api/axios";
 import type { Character } from "../pages/Home";
 
@@ -8,28 +10,43 @@ type Props = {
 };
 
 export default function CharacterModal({ character, onClose, onSuccess }: Props) {
+  // State untuk menyimpan file yang dipilih agar bisa di-preview (opsional)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
 
-    const payload = {
-      name: (form.elements.namedItem("name") as HTMLInputElement).value,
-      element: (form.elements.namedItem("element") as HTMLInputElement).value,
-      region: (form.elements.namedItem("region") as HTMLInputElement).value,
-      weapon: (form.elements.namedItem("weapon") as HTMLInputElement).value,
-      image: (form.elements.namedItem("image") as HTMLInputElement).value,
-    };
+    // 1. Gunakan FormData untuk mengirim File
+    const formData = new FormData();
+    formData.append("name", (form.elements.namedItem("name") as HTMLInputElement).value);
+    formData.append("element", (form.elements.namedItem("element") as HTMLInputElement).value);
+    formData.append("region", (form.elements.namedItem("region") as HTMLInputElement).value);
+    formData.append("weapon", (form.elements.namedItem("weapon") as HTMLInputElement).value);
+
+    // 2. Ambil file dari input
+    const fileInput = form.elements.namedItem("image") as HTMLInputElement;
+    if (fileInput.files && fileInput.files[0]) {
+      formData.append("image", fileInput.files[0]);
+    }
 
     try {
+      // 3. Kirim FormData ke API
       if (character) {
-        await dataAPI.put(`/characters/edit/${character.id}`, payload);
+        // Untuk UPDATE
+        await dataAPI.patch(`/characters/edit/${character.id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        await dataAPI.post("/characters/post", payload);
+        // Untuk CREATE
+        await dataAPI.post("/characters/post", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
       onSuccess();
     } catch (err) {
-      alert("Gagal menyimpan character");
+      alert("Gagal menyimpan character. Pastikan backend mendukung upload file.");
       console.error(err);
     }
   };
@@ -42,20 +59,38 @@ export default function CharacterModal({ character, onClose, onSuccess }: Props)
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          <input name="name" defaultValue={character?.name ?? ""} placeholder="Name" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" />
-          <input name="element" defaultValue={character?.element ?? ""} placeholder="Element" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" />
-          <input name="region" defaultValue={character?.region ?? ""} placeholder="Region" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" />
-          <input name="weapon" defaultValue={character?.weapon ?? ""} placeholder="Weapon" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" />
-          <input name="image" defaultValue={character?.imageUrl ?? ""} placeholder="Image URL" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" />
+          <input name="name" defaultValue={character?.name ?? ""} placeholder="Name" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" required />
+          <input name="element" defaultValue={character?.element ?? ""} placeholder="Element" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" required />
+          <input name="region" defaultValue={character?.region ?? ""} placeholder="Region" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" required />
+          <input name="weapon" defaultValue={character?.weapon ?? ""} placeholder="Weapon" className="w-full p-3 rounded-lg bg-white/10 border border-white/20 text-white" required />
+          
+          {/* PERBAIKAN: Input URL diganti menjadi Input FILE */}
+          <div className="space-y-1">
+            <label className="text-sm opacity-70">Character Image</label>
+            <input 
+              name="image" 
+              type="file" 
+              accept="image/*"
+              onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+              className="w-full p-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm" 
+              // Jika edit, tidak wajib upload gambar baru kecuali ingin ganti
+              required={!character} 
+            />
+          </div>
+
+          {/* Menampilkan Nama File yang dipilih */}
+          {selectedFile && (
+            <p className="text-xs text-green-400 italic">File terpilih: {selectedFile.name}</p>
+          )}
 
           <div className="flex gap-2 pt-2">
-            <button className="flex-1 bg-purple-600 py-2 rounded">
+            <button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700 py-2 rounded font-bold">
               Save
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-400 text-black py-2 rounded"
+              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-2 rounded"
             >
               Cancel
             </button>
