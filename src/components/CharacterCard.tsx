@@ -10,7 +10,7 @@ export default function CharacterCard({ data, onEdit, onDelete }: Props) {
   return (
     <div className="bg-white/10 rounded-xl overflow-hidden backdrop-blur-xl border border-white/20">
       <img
-        src={data.image}
+        src={data.imageUrl}
         alt={data.name}
         className="h-40 w-full object-cover"
       />

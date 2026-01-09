@@ -11,8 +11,12 @@ export type Character = {
   element: string;
   region: string;
   weapon: string;
-  image: string;
+  imageUrl: string;
 };
+
+// src/pages/Home.tsx
+
+// ... import tetap sama
 
 export default function Home() {
   const navigate = useNavigate();
@@ -22,73 +26,72 @@ export default function Home() {
   const [selected, setSelected] = useState<Character | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 GET ALL CHARACTER (ANTI WHITE SCREEN)
   const fetchCharacters = async () => {
+    setLoading(true); // Pastikan loading dimulai setiap fetch
     try {
       const res = await dataAPI.get("/characters");
-      setCharacters(res.data);
+      
+      // PERBAIKAN: Pastikan data yang dimasukkan ke state adalah Array
+      // Jika backend membungkus datanya (misal res.data.data), sesuaikan di sini
+      const responseData = Array.isArray(res.data) ? res.data : (res.data.data || []);
+      setCharacters(responseData);
+      
     } catch (err) {
       console.error("Fetch characters failed:", err);
-      alert("Session habis, silakan login ulang");
+      // Jika error 401 (Unauthorized), arahkan ke signin
+      alert("Gagal mengambil data atau session habis");
       navigate("/signin");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleDelete = async (id: number) => {
+  if (!confirm("Yakin hapus karakter ini?")) return;
+
+  try {
+    await dataAPI.delete(`/characters/delete/${id}`);
+    fetchCharacters(); // refresh data
+  } catch (err) {
+    console.error("Delete failed:", err);
+    alert("Gagal menghapus karakter");
+  }
+};
+
   useEffect(() => {
     fetchCharacters();
   }, []);
 
-  // 🔹 DELETE
-  const handleDelete = async (id: number) => {
-    if (!confirm("Hapus karakter ini?")) return;
+  useEffect(() => {
+  console.log("CHARACTERS:", characters);
+}, [characters]);
 
-    try {
-      await dataAPI.delete(`/characters/${id}`);
-      fetchCharacters();
-    } catch (err) {
-      alert("Gagal menghapus karakter");
-    }
-  };
-
-  // 🔹 LOGOUT
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/signin");
-  };
+  // ... fungsi logout dan delete tetap sama
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
-        Loading...
+      // Pastikan ada background agar teks "Loading" yang berwarna putih kelihatan
+      <div className="min-h-screen flex items-center justify-center bg-purple-900 text-white">
+        <p className="text-xl animate-pulse">Loading data characters...</p>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-linear-to-r from-purple-900 to-blue-900 p-6 text-white">
+      {/* Konten Utama */}
       <div className="max-w-6xl mx-auto">
-
         {/* HEADER */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Genshin Characters</h1>
-
           <div className="flex gap-3">
             <button
-              onClick={() => {
-                setSelected(null);
-                setShowModal(true);
-              }}
-              className="px-4 py-2 bg-white text-purple-700 rounded-lg font-semibold"
+              onClick={() => { setSelected(null); setShowModal(true); }}
+              className="px-4 py-2 bg-white text-purple-700 rounded-lg font-semibold hover:bg-gray-100"
             >
               + Add Character
             </button>
-
-            <button
-              onClick={logout}
-              className="px-4 py-2 bg-red-500 rounded-lg"
-            >
+            <button className="px-4 py-2 bg-red-500 rounded-lg hover:bg-red-600">
               Logout
             </button>
           </div>
@@ -96,32 +99,27 @@ export default function Home() {
 
         {/* CARD LIST */}
         {characters.length === 0 ? (
-          <p className="text-center opacity-70">Belum ada karakter</p>
+          <div className="text-center py-20">
+            <p className="text-xl opacity-70">Belum ada karakter yang ditemukan.</p>
+          </div>
         ) : (
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {characters.map((char) => (
               <CharacterCard
                 key={char.id}
                 data={char}
-                onEdit={() => {
-                  setSelected(char);
-                  setShowModal(true);
-                }}
+                onEdit={() => { setSelected(char); setShowModal(true); }}
                 onDelete={() => handleDelete(char.id)}
               />
             ))}
           </div>
         )}
 
-        {/* MODAL (SAFE) */}
         {showModal && (
           <CharacterModal
             character={selected}
             onClose={() => setShowModal(false)}
-            onSuccess={() => {
-              setShowModal(false);
-              fetchCharacters();
-            }}
+            onSuccess={() => { setShowModal(false); fetchCharacters(); }}
           />
         )}
       </div>
