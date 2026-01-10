@@ -27,8 +27,8 @@ export default function CharacterCard({ data, onEdit, onDelete }: Props) {
         <div className="p-4 space-y-1">
           <h2 className="text-lg font-bold group-hover:text-purple-400">{data.name}</h2>
           <p className="text-sm opacity-70">Element: {data.element}</p>
-          <p className="text-sm opacity-70">Element: {data.region}</p>
-           <p className="text-sm opacity-70">Element: {data.weapon}</p>
+          <p className="text-sm opacity-70">Region: {data.region}</p>
+           <p className="text-sm opacity-70">Weapon: {data.weapon}</p>
         </div>
       </div>
 
