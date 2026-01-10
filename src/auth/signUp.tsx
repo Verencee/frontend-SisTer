@@ -1,5 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { authAPI } from "../api/axios";
+import toast from "react-hot-toast";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -13,9 +14,10 @@ export default function SignUp() {
 
     try {
       await authAPI.post("/user/signup", { username, password });
+      toast.success("Akun berhasil dibuat! Silakan login.");
       navigate("/signin");
     } catch {
-      alert("Register gagal");
+      toast.error("Gagal mendaftar. Username mungkin sudah ada.");
     }
   };
 

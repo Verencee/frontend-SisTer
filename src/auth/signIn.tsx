@@ -1,5 +1,6 @@
 import { useNavigate, Link } from "react-router-dom";
 import { authAPI } from "../api/axios";
+import toast from "react-hot-toast";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -14,9 +15,10 @@ export default function SignIn() {
     try {
       const res = await authAPI.post("/user/signin", { username, password });
       localStorage.setItem("token", res.data.token);
+      toast.success("Welcome back! Login berhasil.");
       navigate("/home");
     } catch {
-      alert("Login gagal");
+      toast.error("Login gagal! Cek username/password.");
     }
   };
 

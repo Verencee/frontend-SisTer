@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { dataAPI } from "../api/axios";
 import { useNavigate } from "react-router-dom";
-
+import toast from "react-hot-toast";
 import CharacterCard from "../components/CharacterCard";
 import CharacterModal from "../components/CharacterModal";
 
@@ -23,18 +23,15 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const fetchCharacters = async () => {
-    setLoading(true); // Pastikan loading dimulai setiap fetch
+    setLoading(true); 
     try {
       const res = await dataAPI.get("/characters");
       
-      // PERBAIKAN: Pastikan data yang dimasukkan ke state adalah Array
-      // Jika backend membungkus datanya (misal res.data.data), sesuaikan di sini
       const responseData = Array.isArray(res.data) ? res.data : (res.data.data || []);
       setCharacters(responseData);
       
     } catch (err) {
       console.error("Fetch characters failed:", err);
-      // Jika error 401 (Unauthorized), arahkan ke signin
       alert("Gagal mengambil data atau session habis");
       navigate("/signin");
     } finally {
@@ -47,10 +44,11 @@ export default function Home() {
 
   try {
     await dataAPI.delete(`/characters/delete/${id}`);
-    fetchCharacters(); // refresh data
+    toast.success("Karakter berhasil dihapus!");
+    fetchCharacters(); 
   } catch (err) {
     console.error("Delete failed:", err);
-    alert("Gagal menghapus karakter");
+    toast.error("Gagal menghapus data.");
   }
 };
 

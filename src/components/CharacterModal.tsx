@@ -1,7 +1,7 @@
-// src/components/CharacterModal.tsx
-import { useState } from "react"; // Tambahkan useState untuk preview
+import { useState } from "react"; 
 import { dataAPI } from "../api/axios";
 import type { Character } from "../pages/Home";
+import toast from "react-hot-toast";
 
 type Props = {
   character: Character | null;
@@ -32,10 +32,12 @@ export default function CharacterModal({ character, onClose, onSuccess }: Props)
         await dataAPI.patch(`/characters/edit/${character.id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Data karakter diperbarui!");
       } else {
         await dataAPI.post("/characters/post", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Karakter baru ditambahkan!");
       }
 
       onSuccess();
